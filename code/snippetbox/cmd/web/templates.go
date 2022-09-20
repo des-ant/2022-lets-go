@@ -8,11 +8,12 @@ import (
 	"github.com/des-ant/2022-lets-go/code/snippetbox/internal/models"
 )
 
-// Add a CurrentYear field to the templateData struct.
+// Add a Form field with the type "any".
 type templateData struct {
 	CurrentYear int
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
+	Form        any
 }
 
 // Create a humanDate function which returns a nicely formatted string
