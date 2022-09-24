@@ -3,27 +3,24 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"html/template" // New import
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 
-	// Import the models package that we just created. You need to prefix this with
-	// whatever module path you set up back in chapter 02.01 (Project Setup and Creating
-	// a Module) so that the import statement looks like this:
-	// "{your-module-path}/internal/models". If you can't remember what module path you
-	// used, you can find it at the top of the go.mod file.
 	"github.com/des-ant/2022-lets-go/code/snippetbox/internal/models"
 
+	"github.com/go-playground/form/v4" // New import
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Add a templateCache field to the application struct.
+// Add a formDecoder field to hold a pointer to a form.Decoder instance.
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
 	snippets      *models.SnippetModel
 	templateCache map[string]*template.Template
+	formDecoder   *form.Decoder
 }
 
 func main() {
@@ -41,11 +38,13 @@ func main() {
 	}
 	defer db.Close()
 
-	// Initialize a new template cache...
 	templateCache, err := newTemplateCache()
 	if err != nil {
 		errorLog.Fatal(err)
 	}
+
+	// Initialize a decoder instance...
+	formDecoder := form.NewDecoder()
 
 	// And add it to the application dependencies.
 	app := &application{
@@ -53,6 +52,7 @@ func main() {
 		infoLog:       infoLog,
 		snippets:      &models.SnippetModel{DB: db},
 		templateCache: templateCache,
+		formDecoder:   formDecoder,
 	}
 
 	srv := &http.Server{
