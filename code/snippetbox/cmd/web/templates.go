@@ -3,7 +3,7 @@ package main
 import (
 	"html/template"
 	"path/filepath"
-	"time" // New import
+	"time"
 
 	"github.com/des-ant/2022-lets-go/code/snippetbox/internal/models"
 )
@@ -14,7 +14,8 @@ type templateData struct {
 	Snippets        []*models.Snippet
 	Form            any
 	Flash           string
-	IsAuthenticated bool // Add an IsAuthenticated field to the templateData struct.
+	IsAuthenticated bool
+	CSRFToken       string // Add a CSRFToken field.
 }
 
 // Create a humanDate function which returns a nicely formatted string
