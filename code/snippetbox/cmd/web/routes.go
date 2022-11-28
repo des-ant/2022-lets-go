@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/des-ant/2022-lets-go/code/snippetbox/ui" // New import
+	"github.com/des-ant/2022-lets-go/code/snippetbox/ui"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/justinas/alice"
@@ -19,8 +19,8 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.FS(ui.Files))
 	router.Handler(http.MethodGet, "/static/*filepath", fileServer)
 
-	// Add a new GET /ping route.
 	router.HandlerFunc(http.MethodGet, "/ping", ping)
+	router.HandlerFunc(http.MethodGet, "/about", about)
 
 	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 
