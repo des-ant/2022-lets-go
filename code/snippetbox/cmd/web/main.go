@@ -19,10 +19,11 @@ import (
 )
 
 type application struct {
+	debug          bool // Add a new debug field.
 	errorLog       *log.Logger
 	infoLog        *log.Logger
-	snippets       models.SnippetModelInterface // Use our new interface type.
-	users          models.UserModelInterface    // Use our new interface type.
+	snippets       models.SnippetModelInterface
+	users          models.UserModelInterface
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
@@ -31,6 +32,8 @@ type application struct {
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	dsn := flag.String("dsn", "web:letsgopass@/snippetbox?parseTime=true", "MySQL data source name")
+	// Create a new debug flag with the default value of false.
+	debug := flag.Bool("debug", false, "Enable debug mode")
 
 	flag.Parse()
 
@@ -62,6 +65,7 @@ func main() {
 	// Initialize a models.UserModel instance and add it to the application
 	// dependencies.
 	app := &application{
+		debug:          *debug, // Add the debug flag to the application struct.
 		errorLog:       errorLog,
 		infoLog:        infoLog,
 		snippets:       &models.SnippetModel{DB: db},
