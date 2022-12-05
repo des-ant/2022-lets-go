@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/go-playground/form/v4"
-	"github.com/justinas/nosurf" // New import
+	"github.com/justinas/nosurf"
 )
 
 // The serverError helper writes an error message and stack trace to the errorLog,
@@ -17,6 +17,11 @@ import (
 func (app *application) serverError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
 	app.errorLog.Output(2, trace)
+
+	if app.debug {
+		http.Error(w, trace, http.StatusInternalServerError)
+		return
+	}
 
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
