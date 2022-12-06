@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"net/url" // New import
+	"net/url"
 	"testing"
 
 	"github.com/des-ant/2022-lets-go/code/snippetbox/internal/assert"
@@ -196,4 +196,8 @@ func TestUserSignup(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSnippetCreate(t *testing.T) {
+	// initialize a new test server using the application routes and mocked dependencies.
 }
