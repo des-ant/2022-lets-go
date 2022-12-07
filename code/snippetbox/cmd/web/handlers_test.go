@@ -199,5 +199,14 @@ func TestUserSignup(t *testing.T) {
 }
 
 func TestSnippetCreate(t *testing.T) {
-	// initialize a new test server using the application routes and mocked dependencies.
+	// initialize a new test server using the application routes and mocked
+	// dependencies.
+
+	// Create a new instance of our application struct which uses the mocked
+	// dependencies.
+	app := newTestApplication(t)
+
+	// Establish a new test server for running end-to-end tests.
+	ts := newTestServer(t, app.routes())
+	defer ts.Close()
 }
