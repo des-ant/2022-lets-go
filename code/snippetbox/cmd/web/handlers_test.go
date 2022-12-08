@@ -209,4 +209,11 @@ func TestSnippetCreate(t *testing.T) {
 	// Establish a new test server for running end-to-end tests.
 	ts := newTestServer(t, app.routes())
 	defer ts.Close()
+
+	const (
+		validTitle   = "Title"
+		validContent = "Lorem Ipsum is simply dummy text."
+		validExpiry  = 1
+		formTag      = "<form action='/snippet/create' method='POST' novalidate>"
+	)
 }
