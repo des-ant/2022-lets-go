@@ -210,10 +210,10 @@ func TestSnippetCreate(t *testing.T) {
 	ts := newTestServer(t, app.routes())
 	defer ts.Close()
 
-	const (
-		validTitle   = "Title"
-		validContent = "Lorem Ipsum is simply dummy text."
-		validExpiry  = 1
-		formTag      = "<form action='/snippet/create' method='POST' novalidate>"
-	)
+	t.Run("Unauthenticated", func(t *testing.T) {
+		code, headers, _ := ts.get(t, "/snippet/create")
+
+		assert.Equal(t, code, http.StatusSeeOther)
+		assert.Equal(t, headers.Get("Location"), "/user/login")
+	})
 }
