@@ -218,6 +218,7 @@ func TestSnippetCreate(t *testing.T) {
 	})
 
 	t.Run("Authenticated", func(t *testing.T) {
-		code, headers, body := ts.get(t, "/user/login")
+		_, _, body := ts.get(t, "/user/login")
+		validCSRFToken := extractCSRFToken(t, body)
 	})
 }
