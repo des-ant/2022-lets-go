@@ -229,5 +229,11 @@ func TestSnippetCreate(t *testing.T) {
 		code, _, _ := ts.postForm(t, "/user/login", form)
 
 		assert.Equal(t, code, http.StatusSeeOther)
+
+		code, _, body = ts.get(t, "/snippet/create")
+
+		assert.Equal(t, code, http.StatusOK)
+
+		assert.StringContains(t, body, "<form action='/snippet/create' method='POST'>")
 	})
 }
