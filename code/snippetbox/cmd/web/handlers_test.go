@@ -199,14 +199,7 @@ func TestUserSignup(t *testing.T) {
 }
 
 func TestSnippetCreate(t *testing.T) {
-	// initialize a new test server using the application routes and mocked
-	// dependencies.
-
-	// Create a new instance of our application struct which uses the mocked
-	// dependencies.
 	app := newTestApplication(t)
-
-	// Establish a new test server for running end-to-end tests.
 	ts := newTestServer(t, app.routes())
 	defer ts.Close()
 
@@ -218,22 +211,24 @@ func TestSnippetCreate(t *testing.T) {
 	})
 
 	t.Run("Authenticated", func(t *testing.T) {
+		// Make a GET /user/login request and extract the CSRF token from the
+		// response.
 		_, _, body := ts.get(t, "/user/login")
-		validCSRFToken := extractCSRFToken(t, body)
+		csrfToken := extractCSRFToken(t, body)
 
+		// Make a POST /user/login request using the extracted CSRF token and
+		// credentials from our the mock user model.
 		form := url.Values{}
 		form.Add("email", "alice@example.com")
 		form.Add("password", "pa$$word")
-		form.Add("csrf_token", validCSRFToken)
+		form.Add("csrf_token", csrfToken)
+		ts.postForm(t, "/user/login", form)
 
-		code, _, _ := ts.postForm(t, "/user/login", form)
-
-		assert.Equal(t, code, http.StatusSeeOther)
-
-		code, _, body = ts.get(t, "/snippet/create")
+		// Then check that the authenticated user is shown the create snippet
+		// form.
+		code, _, body := ts.get(t, "/snippet/create")
 
 		assert.Equal(t, code, http.StatusOK)
-
 		assert.StringContains(t, body, "<form action='/snippet/create' method='POST'>")
 	})
 }
