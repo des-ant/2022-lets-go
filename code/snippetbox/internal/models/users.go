@@ -2,8 +2,8 @@ package models
 
 import (
 	"database/sql"
-	"errors"  // New import
-	"strings" // New import
+	"errors"
+	"strings"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -105,15 +105,11 @@ func (m *UserModel) Exists(id int) (bool, error) {
 }
 
 func (m *UserModel) Get(id int) (*User, error) {
+	var user User
 
-	stmnt := "SELECT id, name, email, created FROM users WHERE id = ?"
+	stmt := `SELECT id, name, email, created FROM users WHERE id = ?`
 
-	row := m.DB.QueryRow(stmnt, id)
-
-	// Initialize a pointer to a new zeroed User struct.
-	u := &User{}
-
-	err := row.Scan(&u.ID, &u.Name, &u.Email, &u.Created)
+	err := m.DB.QueryRow(stmt, id).Scan(&user.ID, &user.Name, &user.Email, &user.Created)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
@@ -122,6 +118,5 @@ func (m *UserModel) Get(id int) (*User, error) {
 		}
 	}
 
-	// If everything went OK then return the User object.
-	return u, nil
+	return &user, nil
 }
