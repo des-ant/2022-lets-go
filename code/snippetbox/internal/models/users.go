@@ -103,3 +103,25 @@ func (m *UserModel) Exists(id int) (bool, error) {
 	err := m.DB.QueryRow(stmt, id).Scan(&exists)
 	return exists, err
 }
+
+func (m *UserModel) Get(id int) (*User, error) {
+
+	stmnt := "SELECT id, name, email, created FROM users WHERE id = ?"
+
+	row := m.DB.QueryRow(stmnt, id)
+
+	// Initialize a pointer to a new zeroed User struct.
+	u := &User{}
+
+	err := row.Scan(&u.ID, &u.Name, &u.Email, &u.Created)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
+
+	// If everything went OK then return the User object.
+	return u, nil
+}
