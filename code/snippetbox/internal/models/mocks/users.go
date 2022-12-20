@@ -1,6 +1,8 @@
 package mocks
 
 import (
+	"time"
+
 	"github.com/des-ant/2022-lets-go/code/snippetbox/internal/models"
 )
 
@@ -29,5 +31,25 @@ func (m *UserModel) Exists(id int) (bool, error) {
 		return true, nil
 	default:
 		return false, nil
+	}
+}
+
+func (m *UserModel) Get(id int) (*models.User, error) {
+	const layout = "2006-01-02 15:04:05"
+	created, _ := time.Parse(layout, "2022-01-01 10:00:00")
+
+	user := models.User{
+		ID:             1,
+		Name:           "Alice Jones",
+		Email:          "alice@example.com",
+		HashedPassword: []byte("$2a$12$NuTjWXm3KKntReFwyBVHyuf/to.HEwTy.eS206TNfkGfr6HzGJSWG"),
+		Created:        created,
+	}
+
+	switch id {
+	case 1:
+		return &user, nil
+	default:
+		return nil, models.ErrNoRecord
 	}
 }
