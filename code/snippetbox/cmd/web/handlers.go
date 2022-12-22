@@ -274,6 +274,10 @@ func (app *application) about(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "about.tmpl", data)
 }
 
+func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("OK"))
+}
+
 func ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
