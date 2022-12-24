@@ -276,6 +276,7 @@ func (app *application) about(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 	// Get authenticatedUserID from session
+	id := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
 	// Redirect to login if no user matching authenticatedUserId found
 	// Fetch details of the relevant user from DB
 	// Dump them in plain text HTTP response
