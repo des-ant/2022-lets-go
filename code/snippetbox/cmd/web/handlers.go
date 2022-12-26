@@ -276,24 +276,20 @@ func (app *application) about(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 	// Get authenticatedUserID from session
-	id := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+	userID := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
 	// Redirect to login if no user matching authenticatedUserId found
-	if id == 0 {
-		http.Redirect(w, r, "/user/login", http.StatusSeeOther)
-		return
-	}
 	// Fetch details of the relevant user from DB
-	user, err := app.users.Get(id)
+	user, err := app.users.Get(userID)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
-			return
 		} else {
 			app.serverError(w, err)
 		}
+		return
 	}
 	// Dump them in plain text HTTP response
-	w.Write([]byte(fmt.Sprintf("%#v", user)))
+	fmt.Fprintf(w, "%+v", user)
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
