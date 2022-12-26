@@ -283,9 +283,17 @@ func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Fetch details of the relevant user from DB
+	user, err := app.users.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+			return
+		} else {
+			app.serverError(w, err)
+		}
+	}
 	// Dump them in plain text HTTP response
-
-	w.Write([]byte("OK"))
+	w.Write([]byte(fmt.Sprintf("%#v", user)))
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
