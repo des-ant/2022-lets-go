@@ -2,5 +2,22 @@
 
 {{define "main"}}
     <h2>Account</h2>
+    {{if .User}}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Created</th>
+        </tr>
+        <tr>
+            <td>{{.User.ID}}</td>
+            <td>{{.User.Name}}</td>
+            <td>{{.User.Email}}</td>
+            <td>{{.User.Created}}</td>
+        </tr>
+    </table>
+    {{else}}
         <p>There's nothing to see here... yet!</p>
+    {{end}}
 {{end}}
