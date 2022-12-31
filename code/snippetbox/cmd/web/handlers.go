@@ -288,8 +288,11 @@ func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	// Dump them in plain text HTTP response
-	fmt.Fprintf(w, "%+v", user)
+
+	data := app.newTemplateData(r)
+	data.User = user
+
+	app.render(w, http.StatusOK, "account.tmpl", data)
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
