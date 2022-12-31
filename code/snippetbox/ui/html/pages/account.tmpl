@@ -2,7 +2,7 @@
 
 {{define "main"}}
     <h2>Account</h2>
-    {{if .User}}
+    {{with .User}}
     <table>
         <tr>
             <th>ID</th>
@@ -11,10 +11,10 @@
             <th>Created</th>
         </tr>
         <tr>
-            <td>{{.User.ID}}</td>
-            <td>{{.User.Name}}</td>
-            <td>{{.User.Email}}</td>
-            <td>{{.User.Created}}</td>
+            <td>{{.ID}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.Email}}</td>
+            <td>{{humanDate .Created}}</td>
         </tr>
     </table>
     {{else}}
