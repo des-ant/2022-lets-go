@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context" // New import
+	"context"
 	"fmt"
 	"net/http"
 
@@ -54,6 +54,8 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 
 func (app *application) requireAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Save requested URL path to session data
+		app.sessionManager.Put(r.Context(), "requestedURLPath", r.URL.Path)
 		// If the user is not authenticated, redirect them to the login page and
 		// return from the middleware chain so that no subsequent handlers in
 		// the chain are executed.
