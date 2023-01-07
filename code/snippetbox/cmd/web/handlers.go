@@ -12,6 +12,10 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+func ping(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("OK"))
+}
+
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// Because httprouter matches the "/" path exactly, we can now remove the
 	// manual check of r.URL.Path != "/" from this handler.
@@ -305,6 +309,10 @@ func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "account.tmpl", data)
 }
 
-func ping(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("OK"))
+func (app *application) accountPasswordUpdate(w http.ResponseWriter, r *http.Request) {
+	// GET /account/password/update
+}
+
+func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http.Request) {
+	// GET /account/password/update
 }
