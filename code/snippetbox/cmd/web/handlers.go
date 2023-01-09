@@ -309,6 +309,14 @@ func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "account.tmpl", data)
 }
 
+// Create a new accountPasswordUpdateForm struct.
+type accountPasswordUpdateForm struct {
+	currentPassword     string `form:"password"`
+	newPassword         string `form:"password"`
+	confirmPassword     string `form:"password"`
+	validator.Validator `form:"-"`
+}
+
 func (app *application) accountPasswordUpdate(w http.ResponseWriter, r *http.Request) {
 	// GET /account/password/update
 }
