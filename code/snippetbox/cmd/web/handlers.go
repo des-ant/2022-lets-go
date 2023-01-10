@@ -319,6 +319,9 @@ type accountPasswordUpdateForm struct {
 
 func (app *application) accountPasswordUpdate(w http.ResponseWriter, r *http.Request) {
 	// GET /account/password/update
+	data := app.newTemplateData(r)
+	data.Form = accountPasswordUpdateForm{}
+	app.render(w, http.StatusOK, "password.tmpl", data)
 }
 
 func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http.Request) {
