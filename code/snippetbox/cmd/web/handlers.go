@@ -311,16 +311,16 @@ func (app *application) accountView(w http.ResponseWriter, r *http.Request) {
 
 // Create a new accountPasswordUpdateForm struct.
 type accountPasswordUpdateForm struct {
-	currentPassword     string `form:"password"`
-	newPassword         string `form:"password"`
-	confirmPassword     string `form:"password"`
-	validator.Validator `form:"-"`
+	CurrentPassword         string `form:"currentPassword"`
+	NewPassword             string `form:"newPassword"`
+	NewPasswordConfirmation string `form:"newPasswordConfirmation"`
+	validator.Validator     `form:"-"`
 }
 
 func (app *application) accountPasswordUpdate(w http.ResponseWriter, r *http.Request) {
-	// GET /account/password/update
 	data := app.newTemplateData(r)
 	data.Form = accountPasswordUpdateForm{}
+
 	app.render(w, http.StatusOK, "password.tmpl", data)
 }
 
