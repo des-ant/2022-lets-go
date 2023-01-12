@@ -325,5 +325,14 @@ func (app *application) accountPasswordUpdate(w http.ResponseWriter, r *http.Req
 }
 
 func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http.Request) {
-	// GET /account/password/update
+	var form accountPasswordUpdateForm
+
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+	// All three fields are required.
+	// The newPassword value must be at least 8 characters long.
+	// The newPassword and newPasswordConfirmation values must match.
 }
