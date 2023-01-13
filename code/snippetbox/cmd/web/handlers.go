@@ -333,17 +333,18 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 		return
 	}
 	// All three fields are required.
+	// The newPassword value must be at least 8 characters long.
+	// The newPassword and newPasswordConfirmation values must match.
 	form.CheckField(validator.NotBlank(form.CurrentPassword), "currentPassword", "This field cannot be blank")
 	form.CheckField(validator.NotBlank(form.NewPassword), "newPassword", "This field cannot be blank")
-	form.CheckField(validator.NotBlank(form.NewPasswordConfirmation), "newPasswordConfirmation", "This field cannot be blank")
-	// The newPassword value must be at least 8 characters long.
 	form.CheckField(validator.MinChars(form.NewPassword, 8), "newPassword", "This field must be at least 8 characters long")
-	// The newPassword and newPasswordConfirmation values must match.
-	form.CheckField(validator.PermittedValue(form.NewPasswordConfirmation, form.NewPassword), "newPasswordConfirmation", "Passwords do not match")
+	form.CheckField(validator.NotBlank(form.NewPasswordConfirmation), "newPasswordConfirmation", "This field cannot be blank")
+	form.CheckField(form.NewPasswordConfirmation == form.NewPassword, "newPasswordConfirmation", "Passwords do not match")
 
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
+
 		app.render(w, http.StatusUnprocessableEntity, "password.tmpl", data)
 		return
 	}
