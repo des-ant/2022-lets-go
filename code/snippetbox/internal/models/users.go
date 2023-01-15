@@ -125,6 +125,18 @@ func (m *UserModel) Get(id int) (*User, error) {
 func (m *UserModel) PasswordUpdate(id int, currentPassword, newPassword string) error {
 	// Retrieve the user details for the user with the ID given by the id
 	// parameter from the database.
+	var user User
+
+	stmt := `SELECT id, hashed_password, FROM users WHERE id = ?`
+
+	err := m.DB.QueryRow(stmt, id).Scan(&user.ID, &user.HashedPassword)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNoRecord
+		} else {
+			return nil, err
+		}
+	}
 
 	// Check that the currentPassword value matches the hashed password for the
 	// user. If if doesn’t match, return an ErrInvalidCredentials error.
