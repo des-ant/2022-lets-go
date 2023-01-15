@@ -121,3 +121,15 @@ func (m *UserModel) Get(id int) (*User, error) {
 
 	return &user, nil
 }
+
+func (m *UserModel) PasswordUpdate(id int, currentPassword, newPassword string) error {
+	// Retrieve the user details for the user with the ID given by the id
+	// parameter from the database.
+
+	// Check that the currentPassword value matches the hashed password for the
+	// user. If if doesn’t match, return an ErrInvalidCredentials error.
+
+	// Otherwise, hash the newPassword value and update the hashed_password column in the users table for the relevant user.
+
+	return
+}
