@@ -132,16 +132,24 @@ func (m *UserModel) PasswordUpdate(id int, currentPassword, newPassword string) 
 	err := m.DB.QueryRow(stmt, id).Scan(&user.ID, &user.HashedPassword)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrNoRecord
+			return ErrNoRecord
 		} else {
-			return nil, err
+			return err
 		}
 	}
 
 	// Check that the currentPassword value matches the hashed password for the
 	// user. If if doesn’t match, return an ErrInvalidCredentials error.
+	err = bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(currentPassword))
+	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return ErrInvalidCredentials
+		} else {
+			return err
+		}
+	}
 
 	// Otherwise, hash the newPassword value and update the hashed_password column in the users table for the relevant user.
 
-	return
+	return nil
 }
