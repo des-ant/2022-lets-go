@@ -150,6 +150,17 @@ func (m *UserModel) PasswordUpdate(id int, currentPassword, newPassword string) 
 	}
 
 	// Otherwise, hash the newPassword value and update the hashed_password column in the users table for the relevant user.
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), 12)
+	if err != nil {
+		return err
+	}
+
+	stmt = `UPDATE users SET hashed_password = ? WHERE id = ?`
+
+	_, err = m.DB.Exec(stmt, string(hashedPassword), id)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
