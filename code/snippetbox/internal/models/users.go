@@ -126,22 +126,18 @@ func (m *UserModel) Get(id int) (*User, error) {
 func (m *UserModel) PasswordUpdate(id int, currentPassword, newPassword string) error {
 	// Retrieve the user details for the user with the ID given by the id
 	// parameter from the database.
-	var user User
+	var currentHashedPassword []byte
 
-	stmt := `SELECT id, hashed_password, FROM users WHERE id = ?`
+	stmt := `SELECT hashed_password, FROM users WHERE id = ?`
 
-	err := m.DB.QueryRow(stmt, id).Scan(&user.ID, &user.HashedPassword)
+	err := m.DB.QueryRow(stmt, id).Scan(&currentHashedPassword)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return ErrNoRecord
-		} else {
-			return err
-		}
+		return err
 	}
 
 	// Check that the currentPassword value matches the hashed password for the
 	// user. If if doesn’t match, return an ErrInvalidCredentials error.
-	err = bcrypt.CompareHashAndPassword(user.HashedPassword, []byte(currentPassword))
+	err = bcrypt.CompareHashAndPassword(currentHashedPassword, []byte(currentPassword))
 	if err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return ErrInvalidCredentials
@@ -151,17 +147,13 @@ func (m *UserModel) PasswordUpdate(id int, currentPassword, newPassword string) 
 	}
 
 	// Otherwise, hash the newPassword value and update the hashed_password column in the users table for the relevant user.
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), 12)
+	newHashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), 12)
 	if err != nil {
 		return err
 	}
 
 	stmt = `UPDATE users SET hashed_password = ? WHERE id = ?`
 
-	_, err = m.DB.Exec(stmt, string(hashedPassword), id)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	_, err = m.DB.Exec(stmt, string(newHashedPassword), id)
+	return err
 }
