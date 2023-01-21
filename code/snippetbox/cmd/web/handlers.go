@@ -349,5 +349,17 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 		return
 	}
 
+	// Update the accountPasswordUpdatePost handler so that if the form is valid,
+	// it calls the UserModel.PasswordUpdate() method (remember, the user’s ID
+	// should be in the session data).
+	userID := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+	err = app.users.PasswordUpdate(userID, form.CurrentPassword, form.NewPassword)
+
+	// In the event of a models.ErrInvalidCredentials error, inform the user that
+	// they have entered the wrong value in the currentPassword form field.
+	// Otherwise, add a flash message to the user’s session saying that their
+	// password has been successfully changed and redirect them to their account
+	// page.
+
 	return
 }
