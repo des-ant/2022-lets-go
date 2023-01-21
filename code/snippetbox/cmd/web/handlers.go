@@ -360,6 +360,19 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 	// Otherwise, add a flash message to the user’s session saying that their
 	// password has been successfully changed and redirect them to their account
 	// page.
+	if err != nil {
+		if errors.Is(err, models.ErrInvalidCredentials) {
+			form.AddFieldError("currentPassword", "Password is incorrect")
+
+			data := app.newTemplateData(r)
+			data.Form = form
+			app.render(w, http.StatusUnprocessableEntity, "password.tmpl", data)
+		} else {
+			app.serverError(w, err)
+		}
+
+		return
+	}
 
 	return
 }
