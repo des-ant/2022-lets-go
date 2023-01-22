@@ -357,9 +357,6 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 
 	// In the event of a models.ErrInvalidCredentials error, inform the user that
 	// they have entered the wrong value in the currentPassword form field.
-	// Otherwise, add a flash message to the user’s session saying that their
-	// password has been successfully changed and redirect them to their account
-	// page.
 	if err != nil {
 		if errors.Is(err, models.ErrInvalidCredentials) {
 			form.AddFieldError("currentPassword", "Password is incorrect")
@@ -374,5 +371,9 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 		return
 	}
 
-	return
+	// Otherwise, add a flash message to the user’s session saying that their
+	// password has been successfully changed and redirect them to their account
+	// page.
+	app.sessionManager.Put(r.Context(), "flash", "Password successfully changed!")
+	http.Redirect(w, r, "/account/view", http.StatusSeeOther)
 }
